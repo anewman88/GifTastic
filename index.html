@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>GifTastic!</title>
+</head></div>
+
+<body>
+    <div id="prevbuttons">
+      <button data-animal="dog">
+        Dog
+      </button>
+      <button data-animal="cat">
+        Cat
+      </button>
+    </div>  
+
+    <div id="buttons"></div>
+    
+    <!-- User Input Box -->
+    <form id="animal-form">
+  
+      <!-- Label for Text Box -->
+      <label for="animal-input">Input an Animal</label>
+  
+      <!-- Text Input Box -->
+      <input type="text" id="animal-input"><br>
+  
+      <!-- Submit Button -->
+      <input id="select-animal" type="submit" value="GO!">
+    </form>
+   
+    <div id="gifs-appear-here">
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {    
+    var DebugON = true;
+    //**************************************************************************
+    //* Global Variables
+    var GifLimit = 3;
+
+    var Button = [
+        "dog",
+        "cat",
+        "pig",
+        "goat",
+        "horse",
+        "cow",
+        "gerbil",
+        "parrot",
+        "fish",
+        "snake",
+        "spider",
+        "gecko"
+    ];
+
+  //***************************************************************************
+  // Dynamically create the animal buttons
+  for (var i = 0; i < Button.length; i++) {
+
+    // create pointer to a <button> object
+    var newBtn = $("<button>");
+            
+    // Give each "newBtn" the following classes: "animal-button" "animal" "animal-button-color".
+    newBtn.addClass("animal-button animal animal-button-color");
+
+    // Give each "newBtn" a data-attribute called "data-animal".
+    newBtn.attr("data-animal", Button[i]);
+
+    // Give each "newBtn" a text equal to "Button[i]".
+    newBtn.text(Button[i]);
+
+    // Append each "newBtn" to the "#buttons" div (provided).
+    $("#buttons").append(newBtn);
+  }  // for
+
+  //***************************************************************************
+  // Event handler for user clicking an animal button
+  //***************************************************************************
+  $("button").on("click", function() {
+
+    var animal = $(this).attr("data-animal");
+    if (DebugON) console.log ("In button press: " + animal);
+
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+    animal + "&api_key=P5rvhOxmjcIWEurUoa8B1SKm294ph7SQ&limit", GifLimit;
+
+    SearchAnimalGif (animal);
+
+if (false) {  // jump around code
+    $.ajax({
+      url: queryURL,
+      method: "GET"
+    })
+      .then(function(response) {
+        var results = response.data;
+
+        for (var i = 0; i < results.length; i++) {
+          var gifDiv = $("<div>");
+
+          var rating = results[i].rating;
+
+          var p = $("<p>").text("Rating: " + rating);
+
+          var animalImage = $("<img>");
+          animalImage.attr("src", results[i].images.fixed_height.url);
+
+          gifDiv.prepend(p);
+          gifDiv.prepend(animalImage);
+
+          $("#gifs-appear-here").prepend(gifDiv);
+        }
+      });  // ajax call
+
+}  // if (false)
+  });  // event handler function for button press
+
+  //***************************************************************************
+  // Event handler for user inputting and clicking submit button
+  $("#select-animal").on("click", function(event) {
+
+    // Preventing the button from trying to submit the form
+    event.preventDefault();
+
+    // Storing the animal name
+    var inputAnimal = $("#animal-input").val().trim();
+
+    // Dynamically add the new button to the list
+    // create pointer to a <button> object
+    var newBtn = $("<button>");
+            
+    // Give each "newBtn" the following classes: "animal-button" "animal" "animal-button-color".
+    newBtn.addClass("animal-button animal animal-button-color");
+        
+    // Give each "newBtn" a data-attribute called "data-animal".
+    newBtn.attr("data-animal", inputAnimal);
+        
+    // Give each "newBtn" a text equal to "Button[i]".
+    newBtn.text(inputAnimal);
+        
+    // Append the "newBtn" to the "#buttons" div (provided).
+    $("#buttons").append(newBtn);
+        
+    // Run the SearchAnimalGif function(passing in the animal as an argument)
+    SearchAnimalGif(inputAnimal);
+
+  });  // event handler function for on animal submit button
+
+  //***************************************************************************
+  // function SearchAnimalGif - create ajax call to search for the input animal
+  // and display the response
+  //***************************************************************************
+  function SearchAnimalGif (animal) {
+
+//    var animal = $(this).attr("data-animal");
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+    animal + "&api_key=P5rvhOxmjcIWEurUoa8B1SKm294ph7SQ&limit=" + GifLimit;
+
+    if (DebugON) console.log ("In SearchAnimalGif(): " + animal);
+
+    $.ajax({
+      url: queryURL,
+      method: "GET"
+    })
+      .then(function(response) {
+        var results = response.data;
+
+        for (var i = 0; i < results.length; i++) {
+          var gifDiv = $("<div>");
+
+          var rating = results[i].rating;
+
+          var p = $("<p>").text("Rating: " + rating);
+
+          var animalImage = $("<img>");
+          animalImage.attr("src", results[i].images.fixed_height.url);
+
+          gifDiv.prepend(p);
+          gifDiv.prepend(animalImage);
+
+          $("#gifs-appear-here").prepend(gifDiv);
+        }
+      });  // ajax call
+
+  }  // function SearchAnimalGif()
+
+});  // $(document).ready(function() 
+
+</script>
+
+
+</body>
+
+</html>
