@@ -5,18 +5,29 @@
   <meta charset="utf-8">
   <title>GifTastic!</title>
 </head></div>
+<!-- CSS Styles Ask if these need to be dynamically assigned? -->
+<style>
+  
+  .animal {    
+    padding: 2px;
+    margin: 2px;
+    border-radius: 4px;
+/*   width: 30px;
+    border-style: solid;
+    height: 30px; 
+    float: left;*/
+  }
+
+  .animal-button-color {
+    color: white;
+    background-color: rgb(61, 62, 116);
+  }
+</style>
 
 <body>
-    <div id="prevbuttons">
-      <button data-animal="dog">
-        Dog
-      </button>
-      <button data-animal="cat">
-        Cat
-      </button>
-    </div>  
-
-    <div id="buttons"></div>
+    <div id="button-header">
+      <div id="buttons"></div>
+    </div>
     
     <!-- User Input Box -->
     <form id="animal-form">
@@ -28,7 +39,7 @@
       <input type="text" id="animal-input"><br>
   
       <!-- Submit Button -->
-      <input id="select-animal" type="submit" value="GO!">
+      <input id="select-animal" type="submit" value="Submit">
     </form>
    
     <div id="gifs-appear-here">
@@ -36,6 +47,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript">
+
+
+
     $(document).ready(function() {    
     var DebugON = true;
     //**************************************************************************
@@ -78,47 +92,6 @@
   }  // for
 
   //***************************************************************************
-  // Event handler for user clicking an animal button
-  //***************************************************************************
-  $("button").on("click", function() {
-
-    var animal = $(this).attr("data-animal");
-    if (DebugON) console.log ("In button press: " + animal);
-
-    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
-    animal + "&api_key=P5rvhOxmjcIWEurUoa8B1SKm294ph7SQ&limit", GifLimit;
-
-    SearchAnimalGif (animal);
-
-if (false) {  // jump around code
-    $.ajax({
-      url: queryURL,
-      method: "GET"
-    })
-      .then(function(response) {
-        var results = response.data;
-
-        for (var i = 0; i < results.length; i++) {
-          var gifDiv = $("<div>");
-
-          var rating = results[i].rating;
-
-          var p = $("<p>").text("Rating: " + rating);
-
-          var animalImage = $("<img>");
-          animalImage.attr("src", results[i].images.fixed_height.url);
-
-          gifDiv.prepend(p);
-          gifDiv.prepend(animalImage);
-
-          $("#gifs-appear-here").prepend(gifDiv);
-        }
-      });  // ajax call
-
-}  // if (false)
-  });  // event handler function for button press
-
-  //***************************************************************************
   // Event handler for user inputting and clicking submit button
   $("#select-animal").on("click", function(event) {
 
@@ -138,17 +111,51 @@ if (false) {  // jump around code
     // Give each "newBtn" a data-attribute called "data-animal".
     newBtn.attr("data-animal", inputAnimal);
         
-    // Give each "newBtn" a text equal to "Button[i]".
+    // Give each "newBtn" a text equal to the input animal.
     newBtn.text(inputAnimal);
         
-    // Append the "newBtn" to the "#buttons" div (provided).
+    // Append the "newBtn" to the "#buttons" div.
     $("#buttons").append(newBtn);
         
+    // Clear the input box
+    document.getElementById("animal-form").reset();
+
     // Run the SearchAnimalGif function(passing in the animal as an argument)
     SearchAnimalGif(inputAnimal);
 
   });  // event handler function for on animal submit button
 
+  //***************************************************************************
+  // Event handler for user clicking an animal button
+  //***************************************************************************
+  $(document).on("click", "button", function() {
+
+    var animal = $(this).attr("data-animal");
+    if (DebugON) console.log ("In button press: " + animal);
+
+    SearchAnimalGif (animal);
+
+  });  // event handler function for button press
+
+  //***************************************************************************
+  // Event handler for user clicking an animal image  
+  //***************************************************************************
+  $(document.body).on("click", "img", function() {
+
+    if (DebugON) console.log ("In image press event handler");
+
+    // Swap the source url with the alternate src url
+    var temp_src = $(this).attr("src");
+    $(this).attr("src", $(this).attr("src_swap"));
+    $(this).attr("src_swap", temp_src);
+
+    if (DebugON) console.log ("In image press temp: " + temp_src);
+    if (DebugON) console.log ("In image press src: " + $(this).attr("src"));
+    if (DebugON) console.log ("In image press: swap " + $(this).attr("src_swap"));
+
+  });  // event handler function for image press
+
+ 
   //***************************************************************************
   // function SearchAnimalGif - create ajax call to search for the input animal
   // and display the response
@@ -169,18 +176,41 @@ if (false) {  // jump around code
         var results = response.data;
 
         for (var i = 0; i < results.length; i++) {
+
+          // create pointer to <div>
           var gifDiv = $("<div>");
 
+          // get the rating from the response data
           var rating = results[i].rating;
 
+          // create a paragraph <p> of the text rating
           var p = $("<p>").text("Rating: " + rating);
-
+    
+          // create a pointer of type <img> of animal gif
           var animalImage = $("<img>");
-          animalImage.attr("src", results[i].images.fixed_height.url);
+          
+          // add attribute for onclick function call 
+//          animalImage.attr("onclick", "ImageClickFunction()");
 
-          gifDiv.prepend(p);
-          gifDiv.prepend(animalImage);
+          // assign the image object a class of animal-img
+          animalImage.addClass("animal-img");
 
+          // assign an id attribute
+
+          animalImage.attr("id", "animalID");
+
+          // assign the attribute src of the still picture for the gif
+          animalImage.attr("src", results[i].images.fixed_height_still.url);
+
+          // assign the attribute src of the gif animated image
+          animalImage.attr("src_swap", results[i].images.fixed_height.url);
+
+          // combine the rating para and animal image to gif <div> pointer
+          
+          gifDiv.append(p);
+          gifDiv.append(animalImage);
+        
+          // prepend the gif <div> pointer to the screen
           $("#gifs-appear-here").prepend(gifDiv);
         }
       });  // ajax call
@@ -188,6 +218,20 @@ if (false) {  // jump around code
   }  // function SearchAnimalGif()
 
 });  // $(document).ready(function() 
+
+  //***************************************************************
+  //Function for managing the click of an answer
+  function ImageClickFunction() {
+   
+   console.log ("In ImageClickFunction");
+   var url_src = $(this).attr("src");
+   var url_src2 = this.src;
+   console.log ("In ImageClickFunction this" + this);
+   console.log ("In ImageClickFunction $(this)" + $(this));
+   console.log ("In ImageClickFunction " + url_src + " " + url_src2);
+
+ } // ImageClickFunction()
+
 
 </script>
 
