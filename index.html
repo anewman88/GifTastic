@@ -3,239 +3,48 @@
 
 <head>
   <meta charset="utf-8">
-  <title>GifTastic!</title>
-</head></div>
-<!-- CSS Styles Ask if these need to be dynamically assigned? -->
-<style>
-  
-  .animal {    
-    padding: 2px;
-    margin: 2px;
-    border-radius: 4px;
-/*   width: 30px;
-    border-style: solid;
-    height: 30px; 
-    float: left;*/
-  }
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  .animal-button-color {
-    color: white;
-    background-color: rgb(61, 62, 116);
-  }
-</style>
+  <!-- Link to the Bootstrap CDN. link syntax from getbootstrap.com -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> 
+  <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+
+  <title>GifTastic Food!</title>
+  
+</head>
 
 <body>
+
+  <div class="container", id="AppContainerDIV">
+    <!-- Game Header/Title -->
+    <div id="TitleHeaderID" class="text-center">
+     <h2 class="text-center">Gif-Tastic Food</h2> 
+    </div> 
+
     <div id="button-header">
       <div id="buttons"></div>
     </div>
     
     <!-- User Input Box -->
-    <form id="animal-form">
+    <form id="food-form">
   
       <!-- Label for Text Box -->
-      <label for="animal-input">Input an Animal</label>
+      <label for="food-input">Input a Food</label>
   
       <!-- Text Input Box -->
-      <input type="text" id="animal-input"><br>
+      <input type="text" id="food-input"><br>
   
       <!-- Submit Button -->
-      <input id="select-animal" type="submit" value="Submit">
+      <input id="submit-foodBTN" type="submit" value="Submit">
     </form>
    
-    <div id="gifs-appear-here">
-    </div>
+    <div id="gifs-appear-here"></div>
+
+  </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script type="text/javascript">
-
-
-
-    $(document).ready(function() {    
-    var DebugON = true;
-    //**************************************************************************
-    //* Global Variables
-    var GifLimit = 3;
-
-    var Button = [
-        "dog",
-        "cat",
-        "pig",
-        "goat",
-        "horse",
-        "cow",
-        "gerbil",
-        "parrot",
-        "fish",
-        "snake",
-        "spider",
-        "gecko"
-    ];
-
-  //***************************************************************************
-  // Dynamically create the animal buttons
-  for (var i = 0; i < Button.length; i++) {
-
-    // create pointer to a <button> object
-    var newBtn = $("<button>");
-            
-    // Give each "newBtn" the following classes: "animal-button" "animal" "animal-button-color".
-    newBtn.addClass("animal-button animal animal-button-color");
-
-    // Give each "newBtn" a data-attribute called "data-animal".
-    newBtn.attr("data-animal", Button[i]);
-
-    // Give each "newBtn" a text equal to "Button[i]".
-    newBtn.text(Button[i]);
-
-    // Append each "newBtn" to the "#buttons" div (provided).
-    $("#buttons").append(newBtn);
-  }  // for
-
-  //***************************************************************************
-  // Event handler for user inputting and clicking submit button
-  $("#select-animal").on("click", function(event) {
-
-    // Preventing the button from trying to submit the form
-    event.preventDefault();
-
-    // Storing the animal name
-    var inputAnimal = $("#animal-input").val().trim();
-
-    // Dynamically add the new button to the list
-    // create pointer to a <button> object
-    var newBtn = $("<button>");
-            
-    // Give each "newBtn" the following classes: "animal-button" "animal" "animal-button-color".
-    newBtn.addClass("animal-button animal animal-button-color");
-        
-    // Give each "newBtn" a data-attribute called "data-animal".
-    newBtn.attr("data-animal", inputAnimal);
-        
-    // Give each "newBtn" a text equal to the input animal.
-    newBtn.text(inputAnimal);
-        
-    // Append the "newBtn" to the "#buttons" div.
-    $("#buttons").append(newBtn);
-        
-    // Clear the input box
-    document.getElementById("animal-form").reset();
-
-    // Run the SearchAnimalGif function(passing in the animal as an argument)
-    SearchAnimalGif(inputAnimal);
-
-  });  // event handler function for on animal submit button
-
-  //***************************************************************************
-  // Event handler for user clicking an animal button
-  //***************************************************************************
-  $(document).on("click", "button", function() {
-
-    var animal = $(this).attr("data-animal");
-    if (DebugON) console.log ("In button press: " + animal);
-
-    SearchAnimalGif (animal);
-
-  });  // event handler function for button press
-
-  //***************************************************************************
-  // Event handler for user clicking an animal image  
-  //***************************************************************************
-  $(document.body).on("click", "img", function() {
-
-    if (DebugON) console.log ("In image press event handler");
-
-    // Swap the source url with the alternate src url
-    var temp_src = $(this).attr("src");
-    $(this).attr("src", $(this).attr("src_swap"));
-    $(this).attr("src_swap", temp_src);
-
-    if (DebugON) console.log ("In image press temp: " + temp_src);
-    if (DebugON) console.log ("In image press src: " + $(this).attr("src"));
-    if (DebugON) console.log ("In image press: swap " + $(this).attr("src_swap"));
-
-  });  // event handler function for image press
-
- 
-  //***************************************************************************
-  // function SearchAnimalGif - create ajax call to search for the input animal
-  // and display the response
-  //***************************************************************************
-  function SearchAnimalGif (animal) {
-
-//    var animal = $(this).attr("data-animal");
-    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
-    animal + "&api_key=P5rvhOxmjcIWEurUoa8B1SKm294ph7SQ&limit=" + GifLimit;
-
-    if (DebugON) console.log ("In SearchAnimalGif(): " + animal);
-
-    $.ajax({
-      url: queryURL,
-      method: "GET"
-    })
-      .then(function(response) {
-        var results = response.data;
-
-        for (var i = 0; i < results.length; i++) {
-
-          // create pointer to <div>
-          var gifDiv = $("<div>");
-
-          // get the rating from the response data
-          var rating = results[i].rating;
-
-          // create a paragraph <p> of the text rating
-          var p = $("<p>").text("Rating: " + rating);
-    
-          // create a pointer of type <img> of animal gif
-          var animalImage = $("<img>");
-          
-          // add attribute for onclick function call 
-//          animalImage.attr("onclick", "ImageClickFunction()");
-
-          // assign the image object a class of animal-img
-          animalImage.addClass("animal-img");
-
-          // assign an id attribute
-
-          animalImage.attr("id", "animalID");
-
-          // assign the attribute src of the still picture for the gif
-          animalImage.attr("src", results[i].images.fixed_height_still.url);
-
-          // assign the attribute src of the gif animated image
-          animalImage.attr("src_swap", results[i].images.fixed_height.url);
-
-          // combine the rating para and animal image to gif <div> pointer
-          
-          gifDiv.append(p);
-          gifDiv.append(animalImage);
-        
-          // prepend the gif <div> pointer to the screen
-          $("#gifs-appear-here").prepend(gifDiv);
-        }
-      });  // ajax call
-
-  }  // function SearchAnimalGif()
-
-});  // $(document).ready(function() 
-
-  //***************************************************************
-  //Function for managing the click of an answer
-  function ImageClickFunction() {
-   
-   console.log ("In ImageClickFunction");
-   var url_src = $(this).attr("src");
-   var url_src2 = this.src;
-   console.log ("In ImageClickFunction this" + this);
-   console.log ("In ImageClickFunction $(this)" + $(this));
-   console.log ("In ImageClickFunction " + url_src + " " + url_src2);
-
- } // ImageClickFunction()
-
-
-</script>
-
-
+    <script type="text/javascript"> </script>
+    <script src="assets/javascript/app.js"></script>
 </body>
 
 </html>
