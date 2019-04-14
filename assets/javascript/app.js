@@ -2,7 +2,7 @@ $(document).ready(function() {
 var DebugON = true;
 //**************************************************************************
 //* Global Variables
-var GifLimit = 10;
+var GifLimit = 4;
     
 var Button = [
     "sandwich",
@@ -135,19 +135,18 @@ function SearchFoodGif (food) {
             var gifDiv = $("<div>");
 
             // get the rating from the response data
-            var rating = results[i].rating;
-
-            // create a paragraph <p> of the text rating
-            var p = $("<p>").text("^^^ Rating for this pic: " + rating +" ^^^");
+            var rating = results[i].rating.toUpperCase();
 
             // create a pointer of type <img> of food gif
             var foodImage = $("<img>");
-              
+
+            // shows the rating on hover
+            foodImage.attr('title', "Rating: " + rating);  
+            
             // assign the image object a class of food-img
             foodImage.addClass("food-img");
 
             // assign an id attribute
-
             foodImage.attr("id", "foodID");
 
             // assign the attribute src of the still picture for the gif
@@ -159,7 +158,7 @@ function SearchFoodGif (food) {
             // combine the rating para and food image to gif <div> pointer
             
             gifDiv.append(foodImage);
-            gifDiv.append(p);
+ //           gifDiv.append(p);
         
             // prepend the gif <div> pointer to the screen
             $("#gifs-appear-here").prepend(gifDiv);
