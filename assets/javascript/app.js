@@ -2,7 +2,7 @@ $(document).ready(function() {
 var DebugON = true;
 //**************************************************************************
 //* Global Variables
-var GifLimit = 4;
+var GifLimit = 10;
     
 var Button = [
     "sandwich",
@@ -74,8 +74,7 @@ $("#submit-foodBTN").on("click", function(event) {
     else {  // the button is already in the list
         alert (inputFood + " is already in the list!");
     }
-    
-            
+               
     // Clear the input box
     document.getElementById("food-form").reset();
     
@@ -158,7 +157,6 @@ function SearchFoodGif (food) {
             // combine the rating para and food image to gif <div> pointer
             
             gifDiv.append(foodImage);
- //           gifDiv.append(p);
         
             // prepend the gif <div> pointer to the screen
             $("#gifs-appear-here").prepend(gifDiv);
